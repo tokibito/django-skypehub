@@ -1,22 +1,14 @@
 import os
 import time
+import imp
 from optparse import make_option
 
 from django.conf import settings
 from django.core.management import BaseCommand
 from django.utils.daemonize import become_daemon
+from django.utils.importlib import import_module
 
 from skypehub.utils import get_skype, SKYPE_HOOK_OPTIONS
-from skypehub.models import Message
-
-class SkypeEventHandler(object):
-    def __call__(self, message, status):
-        if status == 'RECEIVED':
-            Message.objects.create(
-                body=message.Body,
-                sender=message.Sender.Handle,
-                chat_name=message.Chat.Name,
-            )
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -41,8 +33,23 @@ class Command(BaseCommand):
             pidfile.write('%d' % os.getpid())
             pidfile.close()
 
+        from skypehub.handlers import on_message
+
+        # load module
+        for app in settings.INSTALLED_APPS:
+            try:
+                app_path = import_module(app).__path__
+            except AttributeError:
+                continue
+            try:
+                imp.find_module('skypebot', app_path)
+            except ImportError:
+                continue
+            import_module("%s.skypebot" % app)
+
         # attach skype
-        skype.OnMessageStatus = SkypeEventHandler()
+        skype.OnMessageStatus = on_message.dispatch
+
         skype.Attach()
         while True:
             time.sleep(1)
