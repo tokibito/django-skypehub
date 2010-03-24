@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management import BaseCommand
 from django.utils.daemonize import become_daemon
 
-from skypehub.utils import get_skype
+from skypehub.utils import get_skype, SKYPE_HOOK_OPTIONS
 from skypehub.models import Message
 
 class SkypeEventHandler(object):
@@ -28,7 +28,7 @@ class Command(BaseCommand):
     help = "run skype bot."
 
     def handle(self, *args, **options):
-        skype_options = getattr(settings, 'SKYPE_HOOK_OPTIONS', {})
+        skype_options = getattr(settings, 'SKYPE_HOOK_OPTIONS', SKYPE_HOOK_OPTIONS)
         skype = get_skype(**skype_options)
 
         # --daemonize

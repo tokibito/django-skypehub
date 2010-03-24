@@ -5,5 +5,5 @@ SKYPE_HOOK_OPTIONS = {
 }
 
 def get_skype(**kwargs):
-    options = kwargs or SKYPE_HOOK_OPTIONS
+    options = kwargs or {}
     return Skype4Py.Skype(**options)
