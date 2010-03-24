@@ -9,7 +9,7 @@ from skypehub.decorators import skype_required
 from skypehub.forms import PostMessageForm
 
 def make_json_response(content):
-    return HttpResponse(json.dumps(content), content_type='application/javascript')
+    return HttpResponse(json.dumps(content, indent=2), content_type='application/javascript')
 
 @skype_required
 def list_chats(request, skype):
