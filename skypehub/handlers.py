@@ -1,6 +1,6 @@
 from skypehub.models import Message
 
-def message_logging_receiver(message, status):
+def message_logging_receiver(handler, message, status):
     Message.objects.create(
         body=message.Body,
         sender=message.Sender.Handle,
@@ -14,8 +14,9 @@ class OnMessageHandler(object):
     default_statuses = ('RECEIVED',)
     default_receivers = ()
 
-    def __init__(self):
+    def __init__(self, skype=None):
         self.receivers = list(self.default_receivers)
+        self.skype = skype
 
     def connect(self, receiver, statuses=None):
         if statuses is None:
@@ -26,7 +27,7 @@ class OnMessageHandler(object):
     def dispatch(self, message, status):
         for statuses, receiver in self.receivers:
             if status in statuses:
-                receiver(message, status)
+                receiver(self, message, status)
 
 on_message = OnMessageHandler()
 on_message.connect(message_logging_receiver)

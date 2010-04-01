@@ -48,6 +48,7 @@ class Command(BaseCommand):
             import_module("%s.skypebot" % app)
 
         # attach skype
+        on_message.skype = skype
         skype.OnMessageStatus = on_message.dispatch
 
         skype.Attach()
