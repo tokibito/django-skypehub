@@ -6,3 +6,4 @@ syntax: regexp
 ^build/
 ^dist/
 \.egg-info
+^docs/_build/
