@@ -33,7 +33,7 @@ class Command(BaseCommand):
             pidfile.write('%d' % os.getpid())
             pidfile.close()
 
-        from skypehub.handlers import on_message
+        from skypehub.handlers import on_message, on_time
 
         # load module
         for app in settings.INSTALLED_APPS:
@@ -49,8 +49,8 @@ class Command(BaseCommand):
 
         # attach skype
         on_message.skype = skype
+        on_time.skype = skype
         skype.OnMessageStatus = on_message.dispatch
 
         skype.Attach()
-        while True:
-            time.sleep(1)
+        on_time()
