@@ -6,7 +6,7 @@ except ImportError:
     from django.utils import simplejson as json
 
 from skypehub.decorators import skype_required
-from skypehub.forms import PostMessageForm
+from skypehub.forms import PostMessageForm, PostUserMessageForm
 
 def make_json_response(content):
     return HttpResponse(json.dumps(content, indent=2), content_type='application/javascript')
@@ -28,4 +28,11 @@ def post_message(request, skype):
         chat = skype.Chat(form.cleaned_data['chat'])
         chat.SendMessage(form.cleaned_data['message'])
         return make_json_response({'result': 'ok'})
+    else:
+        form = PostUserMessageForm(request.POST or None)
+        if form.is_valid():
+            chat = skype.CreateChatWith(form.cleaned_data['username'])
+            chat.SendMessage(form.cleaned_data['message'])
+            return make_json_response({'result': 'ok'})
+
     return  make_json_response({'result': 'validation error.'})
