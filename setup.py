@@ -70,7 +70,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
 
 setup(
     name='django-skypehub',
-    version='0.1.1',
+    version='0.2.0',
     description='Django-skypehub is an app to use skype in remote api',
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
