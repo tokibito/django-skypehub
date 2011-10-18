@@ -4,11 +4,12 @@ from skypehub.utils import json, SkypeError
 from skypehub.decorators import skype_required
 from skypehub.forms import PostMessageForm, PostUserMessageForm
 
+
 def make_json_response(content, status=200):
     return HttpResponse(json.dumps(content, indent=2), content_type='application/javascript', status=status)
 
-@skype_required
-def list_chats(request, skype):
+
+def _list_chats(request, skype):
     chats = []
     for chat in skype.Chats:
         chats.append({
@@ -17,8 +18,10 @@ def list_chats(request, skype):
         })
     return make_json_response({'chats': chats})
 
-@skype_required
-def post_message(request, skype):
+list_chats = skype_required(_list_chats)
+
+
+def _post_message(request, skype):
     form = PostMessageForm(request.POST or None)
     try:
         if form.is_valid():
@@ -39,3 +42,5 @@ def post_message(request, skype):
         else:
             raise e
     return  make_json_response({'result': 'validation error.'})
+
+post_message = skype_required(_post_message)
