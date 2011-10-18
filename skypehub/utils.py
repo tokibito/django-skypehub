@@ -1,5 +1,3 @@
-
-
 try:
     import simplejson as json
 except ImportError:
@@ -14,6 +12,7 @@ from Skype4Py.errors import SkypeError
 SKYPE_HOOK_OPTIONS = {
     'Transport': 'x11',
 }
+
 
 def get_skype(**kwargs):
     """return skype object.

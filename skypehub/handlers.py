@@ -1,9 +1,9 @@
 from select import select
-from socket import socketpair
 from time import time
 from struct import pack, unpack
 
 from skypehub.models import Message
+from skypehub.utils import is_windows
 
 def message_logging_receiver(handler, message, status):
     Message.objects.create(
@@ -41,6 +41,8 @@ class OnTimeHandler(object):
     """
     def __init__(self, skype=None):
         self.skype = skype
+        # TODO: socketpair does not work on Windows.
+        from socket import socketpair
         self.pair = socketpair()
         self.timepoints = []
         self.callables = {}
@@ -97,5 +99,11 @@ class OnTimeHandler(object):
 
 
 on_message = OnMessageHandler()
-on_time = OnTimeHandler()
+if is_windows():
+    def on_time():
+        import time
+        while True:
+            time.sleep(1)
+else:
+    on_time = OnTimeHandler()
 on_message.connect(message_logging_receiver)
