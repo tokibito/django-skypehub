@@ -1,3 +1,5 @@
+
+
 try:
     import simplejson as json
 except ImportError:
@@ -14,5 +16,25 @@ SKYPE_HOOK_OPTIONS = {
 }
 
 def get_skype(**kwargs):
+    """return skype object.
+    """
     options = kwargs or {}
     return Skype4Py.Skype(**options)
+
+
+def get_skype_hook_options():
+    """return SKYPE_HOOK_OPTIONS
+    """
+    from django.conf import settings
+    if hasattr('SKYPE_HOOK_OPTIONS'):
+        return settings.SKYPE_HOOK_OPTIONS
+    if is_windows():
+        return {}
+    return SKYPE_HOOK_OPTIONS
+
+
+def is_windows():
+    """Detect Windows platform.
+    """
+    import platform
+    return platform.system() == 'Windows'
