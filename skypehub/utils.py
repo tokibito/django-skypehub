@@ -26,7 +26,7 @@ def get_skype_hook_options():
     """return SKYPE_HOOK_OPTIONS
     """
     from django.conf import settings
-    if hasattr('SKYPE_HOOK_OPTIONS'):
+    if hasattr(settings, 'SKYPE_HOOK_OPTIONS'):
         return settings.SKYPE_HOOK_OPTIONS
     if is_windows():
         return {}
