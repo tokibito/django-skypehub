@@ -8,7 +8,7 @@ from django.core.management import BaseCommand
 from django.utils.daemonize import become_daemon
 from django.utils.importlib import import_module
 
-from skypehub.utils import get_skype, SKYPE_HOOK_OPTIONS
+from skypehub.utils import get_skype, get_skype_hook_options
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -20,7 +20,7 @@ class Command(BaseCommand):
     help = "run skype bot."
 
     def handle(self, *args, **options):
-        skype_options = getattr(settings, 'SKYPE_HOOK_OPTIONS', SKYPE_HOOK_OPTIONS)
+        skype_options = get_skype_hook_options()
         skype = get_skype(**skype_options)
 
         # --daemonize
@@ -52,5 +52,9 @@ class Command(BaseCommand):
         on_time.skype = skype
         skype.OnMessageStatus = on_message.dispatch
 
-        skype.Attach()
-        on_time()
+        try:
+            skype.Attach()
+            on_time()
+        except KeyboardInterrupt:
+            import sys
+            sys.exit()
