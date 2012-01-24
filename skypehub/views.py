@@ -1,7 +1,9 @@
+#:coding=utf-8:
+
+from django.utils import simplejson as json
 from django.http import HttpResponse
 
-from skypehub.utils import json, SkypeError
-from skypehub.decorators import skype_required
+from skypehub.utils import skype, SkypeError
 from skypehub.forms import PostMessageForm, PostUserMessageForm
 
 
@@ -9,7 +11,7 @@ def make_json_response(content, status=200):
     return HttpResponse(json.dumps(content, indent=2), content_type='application/javascript', status=status)
 
 
-def _list_chats(request, skype):
+def list_chats(request):
     chats = []
     for chat in skype.Chats:
         chats.append({
@@ -18,10 +20,7 @@ def _list_chats(request, skype):
         })
     return make_json_response({'chats': chats})
 
-list_chats = skype_required(_list_chats)
-
-
-def _post_message(request, skype):
+def post_message(request):
     form = PostMessageForm(request.POST or None)
     try:
         if form.is_valid():
@@ -47,5 +46,3 @@ def _post_message(request, skype):
         else:
             raise e
     return  make_json_response({'result': 'validation error.'})
-
-post_message = skype_required(_post_message)

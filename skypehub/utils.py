@@ -1,10 +1,4 @@
-try:
-    import simplejson as json
-except ImportError:
-    try:
-        import json
-    except ImportError:
-        from django.utils import simplejson as json
+#:coding=utf-8:
 
 import Skype4Py
 from Skype4Py.errors import SkypeError
@@ -37,3 +31,5 @@ def is_windows():
     """
     import platform
     return platform.system() == 'Windows'
+
+skype = get_skype(**get_skype_hook_options())
