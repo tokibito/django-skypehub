@@ -1,3 +1,4 @@
+from collections import defaultdict
 from select import select
 from time import time
 from struct import pack, unpack
@@ -20,19 +21,21 @@ class OnMessageHandler(object):
     default_receivers = ()
 
     def __init__(self, skype=None):
-        self.receivers = list(self.default_receivers)
+        self.receivers = defaultdict(lambda: set()) 
+        for status in self.default_statuses:
+            for receiver in self.default_receivers:
+                self.receivers[status].add(receiver)
         self.skype = skype
 
     def connect(self, receiver, statuses=None):
         if statuses is None:
             statuses = list(self.default_statuses)
-        if not receiver in self.receivers:
-            self.receivers.append((statuses, receiver))
+        for status in statuses:
+            self.receivers[status].add(receiver)
 
     def dispatch(self, message, status):
-        for statuses, receiver in self.receivers:
-            if status in statuses:
-                receiver(self, message, status)
+        for receiver in self.receivers[status]:
+            receiver(self, message, status)
 
 class OnTimeHandler(object):
     """
