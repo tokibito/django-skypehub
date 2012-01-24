@@ -26,13 +26,18 @@ def _post_message(request, skype):
     try:
         if form.is_valid():
             chat = skype.Chat(form.cleaned_data['chat'])
-            chat.SendMessage(form.cleaned_data['message'])
+            if hasattr(chat, 'AsyncSendMessage'):
+                chat.AsyncSendMessage(form.cleaned_data['message'])
+            else:
+                chat.SendMessage(form.cleaned_data['message'])
             return make_json_response({'result': 'ok'})
         else:
             form = PostUserMessageForm(request.POST or None)
             if form.is_valid():
-                chat = skype.CreateChatWith(form.cleaned_data['username'])
-                chat.SendMessage(form.cleaned_data['message'])
+                if hasattr(skype, 'AsyncSendMessage'):
+                    chat.AsyncSendMessage(form.cleaned_data['message'])
+                else:
+                    skype.SendMessage(form.cleaned_data['username'], form.cleaned_data['message'])
                 return make_json_response({'result': 'ok'})
     except SkypeError, e:
         # Invalid chat name (errno=105)
