@@ -1,5 +1,4 @@
 import os
-import time
 import imp
 from optparse import make_option
 
@@ -8,7 +7,7 @@ from django.core.management import BaseCommand
 from django.utils.daemonize import become_daemon
 from django.utils.importlib import import_module
 
-from skypehub.utils import get_skype, get_skype_hook_options
+from skypehub.utils import skype
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
@@ -20,9 +19,6 @@ class Command(BaseCommand):
     help = "run skype bot."
 
     def handle(self, *args, **options):
-        skype_options = get_skype_hook_options()
-        skype = get_skype(**skype_options)
-
         # --daemonize
         if options['daemonize']:
             become_daemon()
