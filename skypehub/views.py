@@ -34,7 +34,7 @@ def post_message(request):
             form = PostUserMessageForm(request.POST or None)
             if form.is_valid():
                 if hasattr(skype, 'AsyncSendMessage'):
-                    skype.AsyncSendMessage(form.cleaned_data['message'])
+                    skype.AsyncSendMessage(form.cleaned_data['username'], form.cleaned_data['message'])
                 else:
                     skype.SendMessage(form.cleaned_data['username'], form.cleaned_data['message'])
                 return make_json_response({'result': 'ok'})
