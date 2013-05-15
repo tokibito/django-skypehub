@@ -1,6 +1,7 @@
 # coding: utf-8
 from django.db import models
 
+
 class Message(models.Model):
     body = models.TextField(u'本文')
     sender = models.CharField(u'送信者', max_length=200, db_index=True)

@@ -1,18 +1,25 @@
-#:coding=utf-8:
+# coding: utf-8
 
-import Skype4Py
 from Skype4Py.errors import SkypeError
+
 
 SKYPE_HOOK_OPTIONS = {
     'Transport': 'x11',
 }
 
+_skype = None
 
-def get_skype(**kwargs):
+
+def get_skype(force_create=False, **kwargs):
     """return skype object.
     """
-    options = kwargs or {}
-    return Skype4Py.Skype(**options)
+    global skype
+    from Skype4Py import Skype
+    options = get_skype_hook_options()
+    options.update(kwargs)
+    if _skype is None or force_create:
+        _skype = Skype(**options)
+    return _skype
 
 
 def get_skype_hook_options():
@@ -31,5 +38,3 @@ def is_windows():
     """
     import platform
     return platform.system() == 'Windows'
-
-skype = get_skype(**get_skype_hook_options())

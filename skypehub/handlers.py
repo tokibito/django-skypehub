@@ -6,12 +6,14 @@ from struct import pack, unpack
 from skypehub.models import Message
 from skypehub.utils import is_windows
 
+
 def message_logging_receiver(handler, message, status):
     Message.objects.create(
         body=message.Body,
         sender=message.Sender.Handle,
         chat_name=message.Chat.Name,
     )
+
 
 class OnMessageHandler(object):
     """
@@ -21,7 +23,7 @@ class OnMessageHandler(object):
     default_receivers = ()
 
     def __init__(self, skype=None):
-        self.receivers = defaultdict(lambda: set()) 
+        self.receivers = defaultdict(lambda: set())
         for status in self.default_statuses:
             for receiver in self.default_receivers:
                 self.receivers[status].add(receiver)
@@ -36,6 +38,7 @@ class OnMessageHandler(object):
     def dispatch(self, message, status):
         for receiver in self.receivers[status]:
             receiver(self, message, status)
+
 
 class OnTimeHandler(object):
     """
