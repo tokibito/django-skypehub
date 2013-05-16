@@ -9,12 +9,13 @@ from django.utils.importlib import import_module
 
 from skypehub.utils import skype
 
+
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--daemonize', action='store_true',
-                dest='daemonize', help='daemonize bot.'),
+                    dest='daemonize', help='daemonize bot.'),
         make_option('--pidfile', dest='pidfile', default=None,
-                help='create pid file.'),
+                    help='create pid file.'),
     )
     help = "run skype bot."
 
