@@ -23,10 +23,8 @@ class SkypeViewListChatsTest(TestCase):
     def test_list_chats(self):
         response = _list_chats(None, self.skype)
         self.assertEqual(json.loads(response.content), {
-          "chats": [
-            {
-              "topic": "topic",
-              "name": "chatname"
-            }
-          ]
+            "chats": [
+                {"topic": "topic",
+                 "name": "chatname"}
+            ]
         })
