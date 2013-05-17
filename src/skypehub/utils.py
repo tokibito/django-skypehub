@@ -13,7 +13,7 @@ _skype = None
 def get_skype(force_create=False, **kwargs):
     """return skype object.
     """
-    global skype
+    global _skype
     from Skype4Py import Skype
     options = get_skype_hook_options()
     options.update(kwargs)
