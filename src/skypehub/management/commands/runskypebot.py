@@ -7,14 +7,13 @@ from django.core.management import BaseCommand
 from django.utils.daemonize import become_daemon
 from django.utils.importlib import import_module
 
-from skypehub.utils import skype
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--daemonize', action='store_true',
-                dest='daemonize', help='daemonize bot.'),
+                    dest='daemonize', help='daemonize bot.'),
         make_option('--pidfile', dest='pidfile', default=None,
-                help='create pid file.'),
+                    help='create pid file.'),
     )
     help = "run skype bot."
 
@@ -30,6 +29,7 @@ class Command(BaseCommand):
             pidfile.close()
 
         from skypehub.handlers import on_message, on_time
+        from skypehub.utils import get_skype
 
         # load module
         for app in settings.INSTALLED_APPS:
@@ -44,6 +44,7 @@ class Command(BaseCommand):
             import_module("%s.skypebot" % app)
 
         # attach skype
+        skype = get_skype()
         on_message.skype = skype
         on_time.skype = skype
         skype.OnMessageStatus = on_message.dispatch

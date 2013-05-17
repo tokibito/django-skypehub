@@ -3,8 +3,11 @@ from select import select
 from time import time
 from struct import pack, unpack
 
+from Skype4Py.errors import SkypeAPIError
+
 from skypehub.models import Message
-from skypehub.utils import is_windows
+from skypehub.utils import is_windows, get_skype
+
 
 def message_logging_receiver(handler, message, status):
     Message.objects.create(
@@ -12,6 +15,7 @@ def message_logging_receiver(handler, message, status):
         sender=message.Sender.Handle,
         chat_name=message.Chat.Name,
     )
+
 
 class OnMessageHandler(object):
     """
@@ -21,7 +25,7 @@ class OnMessageHandler(object):
     default_receivers = ()
 
     def __init__(self, skype=None):
-        self.receivers = defaultdict(lambda: set()) 
+        self.receivers = defaultdict(lambda: set())
         for status in self.default_statuses:
             for receiver in self.default_receivers:
                 self.receivers[status].add(receiver)
@@ -34,8 +38,13 @@ class OnMessageHandler(object):
             self.receivers[status].add(receiver)
 
     def dispatch(self, message, status):
-        for receiver in self.receivers[status]:
-            receiver(self, message, status)
+        try:
+            for receiver in self.receivers[status]:
+                receiver(self, message, status)
+        except SkypeAPIError, err:
+            # reconnect skype
+            get_skype(force_create=True)
+
 
 class OnTimeHandler(object):
     """
