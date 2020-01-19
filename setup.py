@@ -9,7 +9,7 @@ setup(
     description='Skype API bridge for Django',
     author='Shinya Okano',
     author_email='tokibito@gmail.com',
-    url='http://bitbucket.org/tokibito/django-skypehub/',
+    url='https://github.com/tokibito/django-skypehub',
     packages=find_packages('src'),
     package_dir={'': 'src'},
     license='BSD',
